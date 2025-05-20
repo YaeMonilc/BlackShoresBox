@@ -69,7 +69,7 @@ interface KuroApiInterface {
     ): Call<KuroBaseResponse<SignInInfoResult>>
 
     @FormUrlEncoded
-    @POST("/user/signIn/signIn")
+    @POST("/user/signIn")
     fun signIn(
         @Header("token")
         token: String,
