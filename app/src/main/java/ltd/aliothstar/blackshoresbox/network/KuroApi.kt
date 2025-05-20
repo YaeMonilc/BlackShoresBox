@@ -124,7 +124,7 @@ interface KuroApiInterface {
         @Field("channelId")
         channelId: Int = 19,
         @Field("countryCode")
-        countryCode: Int = 1
+        country: Country,
     ): Call<KuroBaseResponse<AkiRoleDataResult>>
 
     @FormUrlEncoded
