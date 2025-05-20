@@ -6,4 +6,5 @@ plugins {
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.symbol.processing) apply false
     alias(libs.plugins.hilt.android) apply false
+    alias(libs.plugins.google.protobuf) apply false
 }

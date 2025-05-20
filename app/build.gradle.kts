@@ -1,3 +1,5 @@
+import com.google.protobuf.gradle.id
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.symbol.processing)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.google.protobuf)
 }
 
 android {
@@ -47,7 +50,7 @@ dependencies {
     implementation(libs.coil.compose)
 
     //Datastore
-    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.core)
 
     //Hilt
     implementation(libs.hilt.android)
@@ -63,6 +66,9 @@ dependencies {
     //Okhttp
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+
+    //Protobuf
+    implementation(libs.protobuf.javalite)
 
     //Retrofit
     implementation(libs.retrofit)
@@ -92,4 +98,20 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.14.0"
+    }
+
+    generateProtoTasks {
+        all().forEach {
+            it.builtins {
+                id("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }
