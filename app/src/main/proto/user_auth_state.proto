@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "ltd.aliothstar.blackshoresbox.datastore";
+option java_multiple_files = true;
+
+message UserAuthState {
+  string token = 1;
+  uint32 user_id = 3;
+  bool is_logged_in = 2;
+}
