@@ -1,6 +1,7 @@
 package ltd.aliothstar.blackshoresbox.network
 
 import jakarta.inject.Qualifier
+import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -11,6 +12,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonElement
 import retrofit2.Call
+import retrofit2.awaitResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Header
@@ -170,7 +172,7 @@ interface KuroApiInterface {
         serverId: String,
         @Field("userId")
         userId: Long
-    ): Call<KuroBaseResponse<AkiTowerChallengeDataDetailResult>>
+    ): Call<KuroBaseResponse<AkiSlashDetailResult>>
 
     @FormUrlEncoded
     @POST("/aki/roleBox/akiBox/challengeDetails")
@@ -699,7 +701,7 @@ data class AkiTowerDataDetailResult(
 
 
 @Serializable
-data class AkiTowerChallengeDataDetailResult(
+data class AkiSlashDetailResult(
     val difficultyList: List<DifficultyDetail>,
     val isUnlock: Boolean,
     val seasonEndTime: Long
@@ -859,4 +861,10 @@ data class WidgetGame3RefreshResult(
         val cur: Int,
         val total: Int
     )
+}
+
+fun <T> Call<KuroBaseResponse<T>>.asFlow() = flow<T> {
+    awaitResponse().body()?.data?.let { data ->
+        emit(data)
+    }
 }
