@@ -4,7 +4,9 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import ltd.aliothstar.blackshoresbox.repository.KuroApiRepository
 import ltd.aliothstar.blackshoresbox.repository.UserAuthStateRepository
+import ltd.aliothstar.blackshoresbox.repository.impl.KuroApiRepositoryImpl
 import ltd.aliothstar.blackshoresbox.repository.impl.UserAuthStateRepositoryImpl
 
 @InstallIn(SingletonComponent::class)
@@ -14,4 +16,9 @@ abstract class RepositoryDI {
     abstract fun bindUserAuthStateRepository(
         impl: UserAuthStateRepositoryImpl
     ): UserAuthStateRepository
+
+    @Binds
+    abstract fun bindKuroApiRepository(
+        impl: KuroApiRepositoryImpl
+    ): KuroApiRepository
 }
