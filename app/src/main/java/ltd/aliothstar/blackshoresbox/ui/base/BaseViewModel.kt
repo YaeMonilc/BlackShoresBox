@@ -30,12 +30,18 @@ abstract class BaseViewModel<S: State, I: Intent, E: Effect> : ViewModel() {
 
     abstract fun handleIntent(intent: I)
 
-    fun emitIntent(intent: () -> I) = _intent.trySend(intent())
+    fun emitIntent(intent: () -> I) =
+        viewModelScope.launch {
+            _intent.send(intent())
+        }
 
     private val _effect by lazy { MutableSharedFlow<E>() }
     val effect: SharedFlow<E> by lazy { _effect }
 
-    protected fun emitEffect(effect: () -> E) = _effect.tryEmit(effect())
+    protected fun emitEffect(effect: () -> E) =
+        viewModelScope.launch {
+            _effect.emit(effect())
+        }
 
     init {
         viewModelScope.launch {
