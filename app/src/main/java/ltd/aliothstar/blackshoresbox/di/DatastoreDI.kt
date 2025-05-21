@@ -14,8 +14,8 @@ import java.io.File
 @InstallIn(SingletonComponent::class)
 @Module
 class DatastoreDI {
-    private val userAuthStateDatastore: DataStore<UserAuthState>
-        get() = DataStoreFactory.create(
+    private val userAuthStateDatastore: DataStore<UserAuthState> =
+        DataStoreFactory.create(
             serializer = UserAuthStateSerializer(),
             produceFile = { File("user_auth_state.pb") }
         )
