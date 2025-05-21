@@ -4,4 +4,6 @@
     <string name="activity_crash_top_bar_title">程序发生崩溃！</string>
     <string name="activity_crash_button_copy">复制</string>
     <string name="activity_crash_button_exit">退出</string>
+    <string name="screen_index_navigation_bar_label_profile">信息</string>
+    <string name="screen_index_navigation_bar_label_home">主页</string>
 </resources>

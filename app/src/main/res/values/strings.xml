@@ -3,4 +3,6 @@
     <string name="activity_crash_top_bar_title">App has crashed!</string>
     <string name="activity_crash_button_copy">Copy</string>
     <string name="activity_crash_button_exit">Exit</string>
+    <string name="screen_index_navigation_bar_label_profile">Profile</string>
+    <string name="screen_index_navigation_bar_label_home">Home</string>
 </resources>
