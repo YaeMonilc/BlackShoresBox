@@ -9,4 +9,8 @@ interface KuroApiUseCase {
         token: String,
         game: Game
     ): Flow<Role>
+
+    suspend fun updateUserAuthState(
+        token: String
+    ): Flow<Boolean>
 }

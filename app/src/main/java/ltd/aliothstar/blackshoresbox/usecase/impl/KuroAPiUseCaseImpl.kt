@@ -7,10 +7,12 @@ import kotlinx.coroutines.flow.flow
 import ltd.aliothstar.blackshoresbox.network.Game
 import ltd.aliothstar.blackshoresbox.network.Role
 import ltd.aliothstar.blackshoresbox.repository.KuroApiRepository
+import ltd.aliothstar.blackshoresbox.repository.UserAuthStateRepository
 import ltd.aliothstar.blackshoresbox.usecase.KuroApiUseCase
 
 class KuroAPiUseCaseImpl @Inject constructor(
-    private val kuroApiRepository: KuroApiRepository
+    private val kuroApiRepository: KuroApiRepository,
+    private val userAuthStateRepository: UserAuthStateRepository
 ) : KuroApiUseCase {
     override suspend fun findRoleByGame(
         token: String,
@@ -23,6 +25,20 @@ class KuroAPiUseCaseImpl @Inject constructor(
             it.game == game
         }?.let {
             emit(it)
+        }
+    }
+
+    override suspend fun updateUserAuthState(
+        token: String
+    ): Flow<Boolean> = flow {
+        kuroApiRepository.mineV2(
+            token = token
+        ).firstOrNull()?.let { mine ->
+            userAuthStateRepository.setAuthState {
+                this.token = token
+                userId = mine.userId.toInt()
+                isLoggedIn = true
+            }
         }
     }
 }
