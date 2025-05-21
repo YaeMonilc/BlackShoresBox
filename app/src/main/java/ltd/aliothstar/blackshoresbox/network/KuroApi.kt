@@ -49,7 +49,7 @@ interface KuroApiInterface {
         @Header("token")
         token: String,
         @Field("otherUserId")
-        userId: Int
+        userId: Int?
     ): Call<KuroBaseResponse<MineV2Result>>
 
     @FormUrlEncoded

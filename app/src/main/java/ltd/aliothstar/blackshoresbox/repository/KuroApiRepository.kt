@@ -31,7 +31,7 @@ interface KuroApiRepository {
 
     suspend fun mineV2(
         token: String,
-        userId: Int
+        userId: Int? = null
     ): Flow<MineV2Result.Mine>
 
     suspend fun findRoleList(

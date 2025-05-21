@@ -48,7 +48,7 @@ class KuroApiRepositoryImpl @Inject constructor(
 
     override suspend fun mineV2(
         token: String,
-        userId: Int
+        userId: Int?
     ): Flow<MineV2Result.Mine> =
         api.mineV2(
             token = token,
