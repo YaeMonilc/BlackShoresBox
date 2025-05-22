@@ -2,6 +2,7 @@ package ltd.aliothstar.blackshoresbox
 
 import android.app.Application
 import android.content.Intent
+import android.util.Log
 import dagger.hilt.android.HiltAndroidApp
 import ltd.aliothstar.blackshoresbox.ui.activity.CrashActivity
 import kotlin.system.exitProcess
@@ -14,7 +15,7 @@ class BlackShoresBox : Application() {
         super.onCreate()
 
         Thread.setDefaultUncaughtExceptionHandler { _, throwable ->
-            throwable.printStackTrace()
+            Log.e("APPLICATION_CRASH", throwable.stackTraceToString())
 
             Intent(this, CrashActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
