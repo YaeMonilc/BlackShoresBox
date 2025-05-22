@@ -1,5 +1,7 @@
 package ltd.aliothstar.blackshoresbox.ui.activity
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -80,7 +82,15 @@ class CrashActivity : ComponentActivity() {
                                 FilledTonalButton(
                                     modifier = Modifier
                                         .weight(5f),
-                                    onClick = {}
+                                    onClick = {
+                                        (getSystemService(CLIPBOARD_SERVICE) as ClipboardManager)
+                                            .setPrimaryClip(
+                                                ClipData.newPlainText(
+                                                    getString(R.string.app_name),
+                                                    crashValue
+                                                )
+                                            )
+                                    }
                                 ) {
                                     Text(stringResource(R.string.activity_crash_button_copy))
                                 }
