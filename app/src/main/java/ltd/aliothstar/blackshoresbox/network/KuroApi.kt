@@ -5,12 +5,16 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonTransformingSerializer
 import retrofit2.Call
 import retrofit2.awaitResponse
 import retrofit2.http.Field
@@ -25,6 +29,12 @@ const val KURO_API_BASE_URL = "https://api.kurobbs.com/"
 annotation class KuroApi
 
 interface KuroApiInterface {
+    @POST("/wiki/core/homepage/getPage")
+    fun wikiGetPage(
+        @Header("wiki_type")
+        wikiType: Int = 9
+    ): Call<KuroBaseResponse<WikiGetPageResult>>
+
     @FormUrlEncoded
     @POST("/user/getSmsCode")
     fun getSmsCode(
@@ -332,6 +342,69 @@ class KuroBaseResponse<T>(
         class SendSmsCodeFrequentlyException : ErrorResponse("Send sms code frequently")
         class SmsCodeInvalidException : ErrorResponse("Sms code invalid")
         class TokenExpiredException : ErrorResponse("Token expired")
+    }
+}
+
+@Serializable
+data class WikiGetPageResult(
+    val checkStatus: Int,
+    val contentJson: ContentJson,
+    val id: Int,
+    val status: Int
+) {
+    @Serializable
+    data class ContentJson(
+        val sideModules: List<SideModule>
+    ) {
+        @Serializable
+        data class SideModule(
+            val asideLineVisible: Boolean,
+            @Serializable(with = ContentTransformingSerializer::class)
+            val content: List<Content>,
+            val editLayerHide: Boolean,
+            val iconUrl: String? = null,
+            val id: String,
+            val title: String,
+            val toolslayerVisible: Boolean,
+            val type: String,
+            val unique: Boolean
+        ) {
+            @Serializable
+            data class Content(
+                val tabs: List<Tab>? = null
+            ) {
+                @Serializable
+                data class Tab(
+                    val active: Boolean,
+                    val countDown: CountDown,
+                    val name: String,
+                    val imgs: List<Img>
+                ) {
+                    @Serializable
+                    data class CountDown(
+                        val dateRange: List<String>,
+                        val precision: String,
+                        val type: String
+                    )
+
+                    @Serializable
+                    data class Img(
+                        val img: String
+                    )
+                }
+            }
+
+            object ContentTransformingSerializer : JsonTransformingSerializer<List<Content>>(
+                tSerializer = ListSerializer(Content.serializer())
+            ) {
+                override fun transformDeserialize(element: JsonElement): JsonElement {
+                    return when (element) {
+                        is JsonObject -> JsonArray(listOf(element))
+                        else -> element
+                    }
+                }
+            }
+        }
     }
 }
 

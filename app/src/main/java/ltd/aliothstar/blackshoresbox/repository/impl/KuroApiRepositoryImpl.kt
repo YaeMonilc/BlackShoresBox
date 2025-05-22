@@ -21,6 +21,7 @@ import ltd.aliothstar.blackshoresbox.network.SdkLoginResult
 import ltd.aliothstar.blackshoresbox.network.SignInInfoResult
 import ltd.aliothstar.blackshoresbox.network.SignInResult
 import ltd.aliothstar.blackshoresbox.network.WidgetGame3RefreshResult
+import ltd.aliothstar.blackshoresbox.network.WikiGetPageResult
 import ltd.aliothstar.blackshoresbox.network.asFlow
 import ltd.aliothstar.blackshoresbox.repository.KuroApiRepository
 
@@ -28,6 +29,9 @@ class KuroApiRepositoryImpl @Inject constructor(
     @KuroApi
     private val api: KuroApiInterface
 ) : KuroApiRepository {
+    override suspend fun wikiGetPage(): Flow<WikiGetPageResult> =
+        api.wikiGetPage().asFlow()
+
     override suspend fun getSmsCode(
         mobile: Long,
         geeTestData: String?

@@ -17,8 +17,11 @@ import ltd.aliothstar.blackshoresbox.network.SdkLoginResult
 import ltd.aliothstar.blackshoresbox.network.SignInInfoResult
 import ltd.aliothstar.blackshoresbox.network.SignInResult
 import ltd.aliothstar.blackshoresbox.network.WidgetGame3RefreshResult
+import ltd.aliothstar.blackshoresbox.network.WikiGetPageResult
 
 interface KuroApiRepository {
+    suspend fun wikiGetPage(): Flow<WikiGetPageResult>
+
     suspend fun getSmsCode(
         mobile: Long,
         geeTestData: String? = null
