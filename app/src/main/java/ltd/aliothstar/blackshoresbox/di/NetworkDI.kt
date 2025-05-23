@@ -2,7 +2,6 @@ package ltd.aliothstar.blackshoresbox.di
 
 import android.content.Context
 import android.os.Build
-import androidx.room.util.copy
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
