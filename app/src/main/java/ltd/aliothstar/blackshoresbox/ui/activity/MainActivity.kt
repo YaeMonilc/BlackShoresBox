@@ -53,7 +53,11 @@ private fun MainNavHost(
                 modifier = Modifier
                     .fillMaxSize(),
                 navigateToIndexScreen = {
-                    navHostController.navigate(IndexScreenRoute())
+                    navHostController.navigate(IndexScreenRoute()) {
+                        popUpTo(SplashScreenRoute()) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }
