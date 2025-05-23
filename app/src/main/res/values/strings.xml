@@ -5,4 +5,9 @@
     <string name="activity_crash_button_exit">Exit</string>
     <string name="screen_index_navigation_bar_label_profile">Profile</string>
     <string name="screen_index_navigation_bar_label_home">Home</string>
+    <string name="screen_index_page_home_current_banner_title">Current banner</string>
+    <string name="screen_index_page_home_current_banner_start_time">Start time</string>
+    <string name="screen_index_page_home_current_banner_end_time">End time</string>
+    <string name="screen_index_page_home_current_banner_progress">Progress</string>
+    <string name="screen_index_page_home_top_bar_title">Home</string>
 </resources>

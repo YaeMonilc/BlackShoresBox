@@ -11,10 +11,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -23,6 +26,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import ltd.aliothstar.blackshoresbox.R
+import ltd.aliothstar.blackshoresbox.ui.screen.index.page.home.HomePage
+import ltd.aliothstar.blackshoresbox.ui.screen.index.page.home.HomePageTopBar
 
 @Serializable
 class IndexScreenRoute
@@ -36,10 +41,18 @@ fun IndexScreen(
 
     val state by viewModel.state
 
+    val snackBarHostState = remember { SnackbarHostState() }
+
     val pageState = rememberPagerState(
         initialPage = state.page.tag.index,
         pageCount = { PageTag.entries.size }
     )
+
+    fun onSnackBarMessage(message: String) {
+        scope.launch {
+            snackBarHostState.showSnackbar(message)
+        }
+    }
 
     LaunchedEffect(state.page.tag) {
         scope.launch {
@@ -58,9 +71,14 @@ fun IndexScreen(
     Scaffold(
         modifier = Modifier
             .then(modifier),
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackBarHostState
+            )
+        },
         topBar = {
             when (state.page.tag) {
-                PageTag.HOME -> {}
+                PageTag.HOME -> HomePageTopBar()
                 PageTag.PROFILE -> {}
             }
         },
@@ -108,7 +126,12 @@ fun IndexScreen(
                     .fillMaxSize()
             ) {
                 when (PageTag.fromIndex(index)) {
-                    PageTag.HOME -> {}
+                    PageTag.HOME ->
+                        HomePage(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            onSnackBarMessage = { onSnackBarMessage(it) }
+                        )
                     PageTag.PROFILE -> {}
                 }
             }
