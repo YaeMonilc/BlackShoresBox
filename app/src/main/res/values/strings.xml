@@ -10,4 +10,6 @@
     <string name="screen_index_page_home_current_banner_end_time">End time</string>
     <string name="screen_index_page_home_current_banner_progress">Progress</string>
     <string name="screen_index_page_home_top_bar_title">Home</string>
+    <string name="composable_network_loading_placeholder_failed_notice">Loading failed (╯°□°）╯︵ ┻━┻</string>
+    <string name="composable_network_loading_placeholder_failed_reload">Click here to reload</string>
 </resources>

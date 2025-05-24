@@ -11,4 +11,6 @@
     <string name="screen_index_page_home_current_banner_end_time">结束时间</string>
     <string name="screen_index_page_home_current_banner_progress">进度</string>
     <string name="screen_index_page_home_top_bar_title">主页</string>
+    <string name="composable_network_loading_placeholder_failed_notice">加载失败 (╯°□°）╯︵ ┻━┻</string>
+    <string name="composable_network_loading_placeholder_failed_reload">点击这里重新加载</string>
 </resources>
