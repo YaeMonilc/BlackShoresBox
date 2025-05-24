@@ -34,11 +34,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import ltd.aliothstar.blackshoresbox.R
+import ltd.aliothstar.blackshoresbox.ui.composable.NetworkLoadingPlaceholder
+import ltd.aliothstar.blackshoresbox.ui.composable.NetworkState
 import ltd.aliothstar.blackshoresbox.ui.composable.OutlinedCardAreaContent
-import ltd.aliothstar.blackshoresbox.util.timeStampToProcess
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@OptIn(ExperimentalMaterial3Api::class)
 fun HomePageTopBar(
     modifier: Modifier = Modifier
 ) {
@@ -76,33 +77,27 @@ fun HomePage(
             )
             .then(modifier)
     ) {
-        AnimatedVisibility(
+        CurrentBannerContent(
             modifier = Modifier
                 .fillMaxWidth(),
-            visible = state.currentBanner != null &&
-                    state.currentBanner!!.banners.isNotEmpty(),
-            enter = fadeIn()
-        ) {
-            state.currentBanner?.let {
-                CurrentBannerContent(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    currentBanner = it,
-                    onTabSelect = { index ->
-                        viewModel.emitIntent { HomePageIntent.SelectBanner(index) }
-                    }
-                )
+            currentBanner = state.currentBanner,
+            onTabSelect = { index ->
+                viewModel.emitIntent { HomePageIntent.SelectBanner(index) }
+            },
+            onReload = {
+                viewModel.emitIntent { HomePageIntent.LoadBanners }
             }
-        }
+        )
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 private fun CurrentBannerContent(
     modifier: Modifier = Modifier,
     currentBanner: HomePageState.CurrentBanner,
-    onTabSelect: (Int) -> Unit = {}
+    onTabSelect: (Int) -> Unit = {},
+    onReload: () -> Unit = {}
 ) {
     OutlinedCardAreaContent(
         modifier = Modifier
@@ -113,115 +108,123 @@ private fun CurrentBannerContent(
             )
         },
         content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
+            AnimatedVisibility(
+                visible = currentBanner.networkState == NetworkState.SUCCESS,
+                enter = fadeIn()
             ) {
-                PrimaryScrollableTabRow(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    selectedTabIndex = currentBanner.selectBannerIndex,
-                    edgePadding = 0.dp
-                ) {
-                    currentBanner.banners.forEachIndexed { index, item ->
-                        Tab(
-                            selected = index == currentBanner.selectBannerIndex,
-                            onClick = { onTabSelect(index) },
-                            text = {
-                                Text(
-                                    text = item.title
+                Column {
+                    currentBanner.data?.let { data ->
+                        PrimaryScrollableTabRow(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            selectedTabIndex = currentBanner.selectBannerIndex,
+                            edgePadding = 0.dp
+                        ) {
+                            data.banners.forEachIndexed { index, item ->
+                                Tab(
+                                    selected = index == currentBanner.selectBannerIndex,
+                                    onClick = { onTabSelect(index) },
+                                    text = {
+                                        Text(
+                                            text = item.title
+                                        )
+                                    }
                                 )
                             }
-                        )
-                    }
-                }
-                currentBanner.banners.getOrNull(currentBanner.selectBannerIndex)
-                    ?.let { banner ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .weight(2f)
-                                    .fillMaxHeight()
-                                    .padding(10.dp),
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                ProvideTextStyle(
-                                    value = TextStyle.Default.copy(
-                                        fontSize = 11.sp
-                                    )
+                        }
+                        data.banners.getOrNull(currentBanner.selectBannerIndex)
+                            ?.let { banner ->
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(150.dp)
                                 ) {
-                                    Text(
-                                        text = stringResource(R.string.screen_index_page_home_current_banner_start_time)
-                                    )
-                                    Text(banner.countdown.startTime)
-                                    Text(
-                                        text = stringResource(R.string.screen_index_page_home_current_banner_end_time)
-                                    )
-                                    Text(banner.countdown.endTime)
-                                    Text(
-                                        text = stringResource(R.string.screen_index_page_home_current_banner_progress)
-                                    )
-                                    LinearWavyProgressIndicator(
-                                        progress = {
-                                            timeStampToProcess(
-                                                startTimestamp = banner.countdown.starTimestamp,
-                                                endTimestamp = banner.countdown.endTimestamp
+                                    Column(
+                                        modifier = Modifier
+                                            .weight(2f)
+                                            .fillMaxHeight()
+                                            .padding(10.dp),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        ProvideTextStyle(
+                                            value = TextStyle.Default.copy(
+                                                fontSize = 11.sp
+                                            )
+                                        ) {
+                                            Text(
+                                                text = stringResource(R.string.screen_index_page_home_current_banner_start_time)
+                                            )
+                                            Text(banner.countdown.startTime)
+                                            Text(
+                                                text = stringResource(R.string.screen_index_page_home_current_banner_end_time)
+                                            )
+                                            Text(banner.countdown.endTime)
+                                            Text(
+                                                text = stringResource(R.string.screen_index_page_home_current_banner_progress)
+                                            )
+                                            LinearWavyProgressIndicator(
+                                                progress = { banner.countdown.progress }
                                             )
                                         }
+                                    }
+                                    VerticalDivider(
+                                        modifier = Modifier
+                                            .fillMaxHeight()
                                     )
-                                }
-                            }
-                            VerticalDivider(
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                            )
-                            Row(
-                                modifier = Modifier
-                                    .weight(3f)
-                                    .fillMaxHeight()
-                                    .padding(10.dp)
-                            ) {
-                                AsyncImage(
-                                    modifier = Modifier
-                                        .weight(2f)
-                                        .fillMaxHeight(),
-                                    model = banner.images.getOrNull(0),
-                                    contentDescription = null
-                                )
-                                banner.images.subList(1, banner.images.size).let { subList ->
-                                    if (subList.isNotEmpty()) {
-                                        Spacer(
+                                    Row(
+                                        modifier = Modifier
+                                            .weight(3f)
+                                            .fillMaxHeight()
+                                            .padding(10.dp)
+                                    ) {
+                                        AsyncImage(
                                             modifier = Modifier
-                                                .requiredWidth(10.dp)
-                                        )
-                                        LazyHorizontalGrid(
-                                            modifier = Modifier
-                                                .weight(1f)
+                                                .weight(2f)
                                                 .fillMaxHeight(),
-                                            rows = GridCells.Fixed(3)
-                                        ) {
-                                            items(
-                                                items = subList
-                                            ) {
-                                                AsyncImage(
+                                            model = banner.images.getOrNull(0),
+                                            contentDescription = null
+                                        )
+                                        banner.images.subList(1, banner.images.size).let { subList ->
+                                            if (subList.isNotEmpty()) {
+                                                Spacer(
                                                     modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .height((150 / subList.size).dp),
-                                                    model = it,
-                                                    contentDescription = null
+                                                        .requiredWidth(10.dp)
                                                 )
+                                                LazyHorizontalGrid(
+                                                    modifier = Modifier
+                                                        .weight(1f)
+                                                        .fillMaxHeight(),
+                                                    rows = GridCells.Fixed(3)
+                                                ) {
+                                                    items(
+                                                        items = subList
+                                                    ) {
+                                                        AsyncImage(
+                                                            modifier = Modifier
+                                                                .fillMaxWidth()
+                                                                .height((150 / subList.size).dp),
+                                                            model = it,
+                                                            contentDescription = null
+                                                        )
+                                                    }
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                        }
                     }
+                }
             }
+
+            NetworkLoadingPlaceholder(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(150.dp),
+                networkState = currentBanner.networkState,
+                reloadEnable = true,
+                onReload = onReload
+            )
         }
     )
 }
