@@ -1,6 +1,7 @@
 package ltd.aliothstar.blackshoresbox.ui.composable
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +22,7 @@ import androidx.compose.ui.unit.sp
 fun AreaContent(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -54,7 +55,7 @@ fun AreaContent(
 fun CardAreaContent(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     AreaContent(
         modifier = modifier,
@@ -77,7 +78,7 @@ fun CardAreaContent(
 fun OutlinedCardAreaContent(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     AreaContent(
         modifier = modifier,
